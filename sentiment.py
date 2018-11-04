@@ -5,8 +5,8 @@ from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from watson_developer_cloud.natural_language_understanding_v1 import Features, SentimentOptions
 import json
 
-from flask import Flask, request, Response
-app = Flask(__name__)
+from flask import Flask, request, Response, send_from_directory
+app = Flask(__name__, static_url_path='')
 
 natural_language_understanding = NaturalLanguageUnderstandingV1(
     version='2018-03-16',
@@ -16,7 +16,12 @@ natural_language_understanding = NaturalLanguageUnderstandingV1(
 
 from flask_cors import CORS, cross_origin
 CORS(app)
-
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('js', path)
+@app.route('/')
+def root():
+    return app.send_static_file('index.html')
 
 from create_dict import create_desc_dict, create_name_dict
 
